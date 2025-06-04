@@ -23,7 +23,14 @@ public class TraitementImage {
             ImageIO.write(flouMoyenne, "jpg", new File(PATH_IMG + "flou_moyenne.jpg"));
             ImageIO.write(flouGaussien, "jpg", new File(PATH_IMG + "flou_gaussien.jpg"));
 
+            BufferedImage flouMoyEclair = appliquerEclaircissement(flouMoyenne);
+            BufferedImage flouGaussEclair = appliquerEclaircissement(flouGaussien);
+
+            ImageIO.write(flouMoyEclair, "jpg", new File(PATH_IMG + "flou_moyenne_eclair.jpg"));
+            ImageIO.write(flouGaussEclair, "jpg", new File(PATH_IMG + "flou_gaussien_eclair.jpg"));
+
             System.out.println("Filtres appliqués et images enregistrées.");
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -134,5 +141,36 @@ public class TraitementImage {
         }
 
         return result;
+    }
+
+    public static BufferedImage appliquerEclaircissement(BufferedImage img){
+        int height = img.getHeight();
+        int width = img.getWidth();
+
+        BufferedImage result = new BufferedImage(width, height, img.getType());
+
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < height; y++){
+
+                int rgb = img.getRGB(x, y);
+
+                int r = (rgb >> 16) & 0xFF;
+                int g = (rgb >> 8) & 0xFF;
+                int b = rgb & 0xFF;
+
+                int nr = eclaircirCanal(r);
+                int ng = eclaircirCanal(g);
+                int nb = eclaircirCanal(b);
+
+                int nvRGB = (nr << 16) | (ng << 8) | nb;
+
+                result.setRGB(x, y, nvRGB);
+            }
+        }
+        return result;
+    }
+
+    public static int eclaircirCanal(int canal){
+        return Math.round(canal + (75f/100f) * (255 - canal));
     }
 }
