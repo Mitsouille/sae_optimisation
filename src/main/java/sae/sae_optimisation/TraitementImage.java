@@ -7,11 +7,12 @@ import java.io.IOException;
 
 public class TraitementImage {
 
+    public static String PATH_IMG = "src/main/resources/planete/";
+
     public static void main(String[] args) {
         try {
 
-            String base = "img/";
-            BufferedImage image = ImageIO.read(new File(base + "Planete 1.jpg"));
+            BufferedImage image = ImageIO.read(new File(PATH_IMG + "Planete 1.jpg"));
 
             BufferedImage flouMoyenne = appliquerFlouMoyenne(image);
 
@@ -19,8 +20,8 @@ public class TraitementImage {
 
             flouGaussien = appliquerFlouGaussien5x5(flouGaussien);
 
-            ImageIO.write(flouMoyenne, "jpg", new File("img/flou_moyenne.jpg"));
-            ImageIO.write(flouGaussien, "jpg", new File("img/flou_gaussien.jpg"));
+            ImageIO.write(flouMoyenne, "jpg", new File(PATH_IMG + "flou_moyenne.jpg"));
+            ImageIO.write(flouGaussien, "jpg", new File(PATH_IMG + "flou_gaussien.jpg"));
 
             System.out.println("Filtres appliqués et images enregistrées.");
 
