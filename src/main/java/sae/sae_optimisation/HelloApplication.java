@@ -1,4 +1,4 @@
-package org.example.sae_optimisation;
+package sae.sae_optimisation;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

@@ -1,8 +1,8 @@
-module org.example.sae_optimisation {
+module sae.sae_optimisation {
     requires javafx.controls;
     requires javafx.fxml;
 
 
-    opens org.example.sae_optimisation to javafx.fxml;
-    exports org.example.sae_optimisation;
+    opens sae.sae_optimisation to javafx.fxml;
+    exports sae.sae_optimisation;
 }
