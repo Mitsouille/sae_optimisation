@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class TraitementImage {
-
     public static String PATH_IMG = "src/main/resources/planete/";
 
     public static void main(String[] args) {
@@ -20,17 +19,10 @@ public class TraitementImage {
 
             flouGaussien = appliquerFlouGaussien5x5(flouGaussien);
 
-            ImageIO.write(flouMoyenne, "jpg", new File(PATH_IMG + "flou_moyenne.jpg"));
-            ImageIO.write(flouGaussien, "jpg", new File(PATH_IMG + "flou_gaussien.jpg"));
-
-            BufferedImage flouMoyEclair = appliquerEclaircissement(flouMoyenne);
-            BufferedImage flouGaussEclair = appliquerEclaircissement(flouGaussien);
-
-            ImageIO.write(flouMoyEclair, "jpg", new File(PATH_IMG + "flou_moyenne_eclair.jpg"));
-            ImageIO.write(flouGaussEclair, "jpg", new File(PATH_IMG + "flou_gaussien_eclair.jpg"));
+            ImageIO.write(flouMoyenne, "jpg", new File(PATH_IMG + "flou/flou_moyenne.jpg"));
+            ImageIO.write(flouGaussien, "jpg", new File(PATH_IMG + "flou/flou_gaussien.jpg"));
 
             System.out.println("Filtres appliqués et images enregistrées.");
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -143,34 +135,56 @@ public class TraitementImage {
         return result;
     }
 
-    public static BufferedImage appliquerEclaircissement(BufferedImage img){
-        int height = img.getHeight();
-        int width = img.getWidth();
+    public static BufferedImage recolorerImage(BufferedImage originale, double[][] pixels, int[] groupes, double[][] moyennes) {
+        int largeur = originale.getWidth();
+        int hauteur = originale.getHeight();
+        BufferedImage resultat = new BufferedImage(largeur, hauteur, originale.getType());
 
-        BufferedImage result = new BufferedImage(width, height, img.getType());
+        int i = 0;
+        for (int y = 0; y < hauteur; y++) {
+            for (int x = 0; x < largeur; x++) {
+                int g = groupes[i];
+                int r = (int) moyennes[g][0];
+                int g_ = (int) moyennes[g][1];
+                int b = (int) moyennes[g][2];
+                int rgb = (r << 16) | (g_ << 8) | b;
+                resultat.setRGB(x, y, rgb);
+                i++;
+            }
+        }
+        return resultat;
+    }
 
-        for(int x = 0; x < width; x++){
-            for(int y = 0; y < height; y++){
+    public static BufferedImage afficherBiome(BufferedImage image, int[] groupes, double[][] moyennes, int groupeCible, String nomBiome, int pourcentage) {
+        int largeur = image.getWidth();
+        int hauteur = image.getHeight();
+        BufferedImage resultat = new BufferedImage(largeur, hauteur, image.getType());
 
-                int rgb = img.getRGB(x, y);
-
+        int i = 0;
+        for (int y = 0; y < hauteur; y++) {
+            for (int x = 0; x < largeur; x++) {
+                int rgb = image.getRGB(x, y);
                 int r = (rgb >> 16) & 0xFF;
                 int g = (rgb >> 8) & 0xFF;
                 int b = rgb & 0xFF;
 
-                int nr = eclaircirCanal(r);
-                int ng = eclaircirCanal(g);
-                int nb = eclaircirCanal(b);
+                if (groupes[i] != groupeCible) {
+                    r = eclaircir(r, pourcentage);
+                    g = eclaircir(g, pourcentage);
+                    b = eclaircir(b, pourcentage);
+                }
 
-                int nvRGB = (nr << 16) | (ng << 8) | nb;
-
-                result.setRGB(x, y, nvRGB);
+                int nouveauRGB = (r << 16) | (g << 8) | b;
+                resultat.setRGB(x, y, nouveauRGB);
+                i++;
             }
         }
-        return result;
+
+        return resultat;
     }
 
-    public static int eclaircirCanal(int canal){
-        return Math.round(canal + (75f/100f) * (255 - canal));
+    private static int eclaircir(int canal, int pourcentage) {
+        return Math.min(255, Math.round(canal + (pourcentage / 100.0f * (255 - canal))));
     }
+
 }

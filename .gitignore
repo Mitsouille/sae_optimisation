@@ -1,0 +1,33 @@
+# === Java ===
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.tmp
+
+# === Maven / Gradle ===
+target/
+out/
+build/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+.gradle/
+**/build/
+
+# === IntelliJ IDEA ===
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# === OS spécifiques ===
+.DS_Store
+Thumbs.db
+
+# === Logs ===
+*.log
+
+# === Autres caches éventuels ===
+*.swp
+*.swo
