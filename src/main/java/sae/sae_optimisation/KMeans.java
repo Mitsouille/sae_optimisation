@@ -1,7 +1,6 @@
 package sae.sae_optimisation;
 
 import java.util.Random;
-import java.util.Arrays;
 
 public class KMeans {
 
