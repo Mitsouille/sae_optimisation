@@ -17,7 +17,7 @@ public class BiomeClustering {
             double[][] pixels = ImageProcessor.extraireRGB(image);
 
             // Étape 2.1 : clustering K-Means
-            int k = 8;
+            int k = 12;
             int[] affectations = KMeans.clusteriser(pixels, k);
 
             // Étape 2.2 : calcul des centroïdes + étiquettes
