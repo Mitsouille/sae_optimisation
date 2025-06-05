@@ -1,3 +1,4 @@
+// ======= Main.java =======
 package sae.sae_optimisation;
 
 import javafx.application.Application;
@@ -34,8 +35,11 @@ public class Main extends Application {
         TreeItem<String> rootItem = new TreeItem<>("Images disponibles");
         rootItem.setExpanded(true);
         fileTree.setRoot(rootItem);
-
         buildFileTree(new File(BASE_PATH), rootItem);
+
+        ComboBox<String> algoSelector = new ComboBox<>();
+        algoSelector.getItems().addAll("DBSCAN", "OPTICS");
+        algoSelector.setValue("DBSCAN");
 
         fileTree.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && newVal.isLeaf()) {
@@ -52,9 +56,9 @@ public class Main extends Application {
         });
 
         Button detectButton = new Button("Analyser image");
-        detectButton.setOnAction(e -> detectBiomesAndEcosystems());
+        detectButton.setOnAction(e -> detectBiomesAndEcosystems(algoSelector.getValue()));
 
-        VBox controls = new VBox(10, detectButton, statusLabel);
+        VBox controls = new VBox(10, algoSelector, detectButton, statusLabel);
         controls.setPadding(new Insets(10));
 
         imageDisplayBox = new VBox(20);
@@ -85,7 +89,7 @@ public class Main extends Application {
         imageDisplayBox.getChildren().add(loadImageView(file));
     }
 
-    private void detectBiomesAndEcosystems() {
+    private void detectBiomesAndEcosystems(String algo) {
         if (selectedImage == null) {
             statusLabel.setText("Veuillez sélectionner une image d'abord.");
             return;
@@ -98,7 +102,7 @@ public class Main extends Application {
                 return;
             }
 
-            BiomeClustering.analyserImage(img, BASE_PATH, selectedImage.getName());
+            BiomeClustering.analyserImage(img, BASE_PATH, selectedImage.getName(), algo);
 
             imageDisplayBox.getChildren().add(new Label("\nBiomes détectés :"));
             for (File f : new File(BIOME_PATH).listFiles()) {
@@ -135,9 +139,5 @@ public class Main extends Application {
             System.err.println("Erreur chargement image : " + file.getName());
             return new ImageView();
         }
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }
