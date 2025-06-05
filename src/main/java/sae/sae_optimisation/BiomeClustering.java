@@ -17,6 +17,10 @@ public class BiomeClustering {
      */
     public static void analyserImage(BufferedImage image, String dossier, String nomImage, String algo) {
         try {
+
+            //Floute l'image
+             image = TraitementImage.appliquerFlouGaussien5x5(image);
+
             // Vide les anciens résultats
             FileUtils.viderDossier(dossier + "biomes/");
             FileUtils.viderDossier(dossier + "ecosystemes/");
