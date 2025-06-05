@@ -6,28 +6,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class TraitementImage {
-    public static String PATH_IMG = "src/main/resources/planete/";
-
-    public static void main(String[] args) {
-        try {
-
-            BufferedImage image = ImageIO.read(new File(PATH_IMG + "Planete 1.jpg"));
-
-            BufferedImage flouMoyenne = appliquerFlouMoyenne(image);
-
-            BufferedImage flouGaussien = image;
-
-            flouGaussien = appliquerFlouGaussien5x5(flouGaussien);
-
-            ImageIO.write(flouMoyenne, "jpg", new File(PATH_IMG + "flou/flou_moyenne.jpg"));
-            ImageIO.write(flouGaussien, "jpg", new File(PATH_IMG + "flou/flou_gaussien.jpg"));
-
-            System.out.println("Filtres appliqués et images enregistrées.");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static BufferedImage appliquerFlouMoyenne(BufferedImage img) {
         int width = img.getWidth();
@@ -133,26 +111,6 @@ public class TraitementImage {
         }
 
         return result;
-    }
-
-    public static BufferedImage recolorerImage(BufferedImage originale, double[][] pixels, int[] groupes, double[][] moyennes) {
-        int largeur = originale.getWidth();
-        int hauteur = originale.getHeight();
-        BufferedImage resultat = new BufferedImage(largeur, hauteur, originale.getType());
-
-        int i = 0;
-        for (int y = 0; y < hauteur; y++) {
-            for (int x = 0; x < largeur; x++) {
-                int g = groupes[i];
-                int r = (int) moyennes[g][0];
-                int g_ = (int) moyennes[g][1];
-                int b = (int) moyennes[g][2];
-                int rgb = (r << 16) | (g_ << 8) | b;
-                resultat.setRGB(x, y, rgb);
-                i++;
-            }
-        }
-        return resultat;
     }
 
     public static BufferedImage afficherBiome(BufferedImage image, int[] groupes, double[][] moyennes, int groupeCible, String nomBiome, int pourcentage) {
